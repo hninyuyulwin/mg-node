@@ -3,6 +3,8 @@ const crypto = require("crypto");
 
 const getUserList = async (req, res, next) => {
   try {
+    console.log(req.body.user_id);
+
     const users = await userModel.find();
     return res.send({
       data: users,

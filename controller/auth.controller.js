@@ -35,7 +35,28 @@ const register = async (req, res, next) => {
 
 const login = async (req, res, next) => {
   try {
-  } catch (error) {}
+    const { username, password } = req.body;
+    const hashPassword = await makeHash(password);
+    const user = await userModel.findOne({
+      username: username,
+    });
+    if (user && (await bcrypt.compare(password, user.password))) {
+      const token = await generateJwtToken(user);
+      return res.send({
+        msg: "login success",
+        token: token,
+      });
+    } else {
+      return res.send({
+        message: "Something went wrong!",
+      });
+    }
+  } catch (error) {
+    // console.log(error);
+    return res.status(500).send({
+      message: "Something wrong in login process!",
+    });
+  }
 };
 
 module.exports = {
