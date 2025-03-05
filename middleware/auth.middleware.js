@@ -9,8 +9,8 @@ const authentication = async (req, res, next) => {
     });
   }
   try {
-    const { user_id, username } = await verifyToken(authToken);
-    req.body = { ...req.body, user_id: user_id, username: username };
+    const { user_id } = await verifyToken(authToken);
+    req.body = { ...req.body, user_id: user_id };
     next();
   } catch (error) {
     return res.status(401).send({
