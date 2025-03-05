@@ -1,10 +1,10 @@
 const userModel = require("../db/models/User.schema");
 const crypto = require("crypto");
+const { makeHash } = require("../lib/hash.util");
 
 const getUserList = async (req, res, next) => {
   try {
     console.log(req.body.user_id);
-
     const users = await userModel.find();
     return res.send({
       data: users,
@@ -19,12 +19,13 @@ const getUserList = async (req, res, next) => {
 const createUser = async (req, res, next) => {
   try {
     const { profile_image, username, password } = req.body;
+    const hashPassword = await makeHash(password);
     const user_id = crypto.randomUUID();
     const createUser = await userModel.create({
       user_id,
       profile_image,
       username,
-      password,
+      password: hashPassword,
     });
     if (createUser) {
       return res.send({
